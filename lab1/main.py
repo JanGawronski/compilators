@@ -54,8 +54,8 @@ class CalcLexer(Lexer):
     NEQ = "!="
     EQ = "=="
 
+    FLOAT = r"(\d*\.\d+)|(\d+\.\d*)"
     INT = r"\d+"
-    FLOAT = r"\d*\.\d*"
     STRING = r'"[^"]*"'
 
     ID = r"[a-zA-Z_][a-zA-Z0-9_]*"
