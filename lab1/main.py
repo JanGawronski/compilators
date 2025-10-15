@@ -34,7 +34,11 @@ class CalcLexer(Lexer):
         "STRING",
     }
 
-    ignore = " \t\n"
+    @_(r'\n+')
+    def ignore_newline(self, t):
+        self.lineno += len(t.value)
+
+    ignore = " \t"
     ignore_comment = r"\#.*"
 
     DOTADD = r"\.\+"
