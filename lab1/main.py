@@ -6,16 +6,15 @@ from sly import Lexer
 class CalcLexer(Lexer):
     literals = {"+", "-", "*", "/", "(", ")", "{", "}", "[", "]", ":", ";", ",", "'", "=", "<", ">"}
 
-    # Set of token names.   This is always required
     tokens = {
-        "MPLUS",
-        "MMINUS",
-        "MMUL",
-        "MDIV",
-        "PLUSEQ",
-        "MINEQ",
-        "MULEQ",
-        "DIVEQ",
+        "DOTADD",
+        "DOTSUB",
+        "DOTMUL",
+        "DOTDIV",
+        "ADDASSIGN",
+        "SUBASSIGN",
+        "MULASSIGN",
+        "DIVASSIGN",
         "LEQ",
         "GEQ",
         "NEQ",
@@ -37,19 +36,17 @@ class CalcLexer(Lexer):
         "STRING",
     }
 
-    # String containing ignored characters between tokens
     ignore = " \t\n"
     ignore_comment = r"\#.*"
 
-    # Regular expression rules for tokens
-    MPLUS = r"\.\+"
-    MMINUS = r"\.-"
-    MMUL = r"\.\*"
-    MDIV = r"\./"
-    PLUSEQ = r"\+="
-    MINEQ = r"-="
-    MULEQ = r"\*="
-    DIVEQ = r"/="
+    DOTADD = r"\.\+"
+    DOTSUB = r"\.-"
+    DOTMUL = r"\.\*"
+    DOTDIV = r"\./"
+    ADDASSIGN = r"\+="
+    SUBASSIGN = r"-="
+    MULASSIGN = r"\*="
+    DIVASSIGN = r"/="
     LEQ = "<="
     GEQ = ">="
     NEQ = "!="
@@ -74,7 +71,6 @@ class CalcLexer(Lexer):
 
 
 if __name__ == "__main__":
-    # Bardziej rozbudowany przykład do testowania
     data = """
 # To jest komentarz, ktory powinien zostac zignorowany
 A = zeros(5); # inicjalizacja macierzy
@@ -89,6 +85,5 @@ if (x <= 5) {
     print("INPUT:\n", data)
     lexer = CalcLexer()
 
-    # Pętla iterująca przez wszystkie tokeny znalezione w danych
     for tok in lexer.tokenize(data):
         print(f"type={tok.type:<10} value={tok.value!r:<20} lineno={tok.lineno}")
