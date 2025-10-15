@@ -71,16 +71,7 @@ class CalcLexer(Lexer):
 
 
 if __name__ == "__main__":
-    data = """
-# To jest komentarz, ktory powinien zostac zignorowany
-A = zeros(5); # inicjalizacja macierzy
-B = A'; # transpozycja
-
-if (x <= 5) {
-    y = x * 2.5;
-    print "Wartosc y to:", y;
-}
-"""
+    data = open("./lab1/examples/example0.m").read()
 
     print("INPUT:\n", data)
     lexer = CalcLexer()
