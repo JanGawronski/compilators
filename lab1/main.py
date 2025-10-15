@@ -1,5 +1,3 @@
-# calclex.py
-
 from sly import Lexer
 
 
@@ -31,7 +29,7 @@ class CalcLexer(Lexer):
         "ONES",
         "PRINT",
         "ID",
-        "NUM",
+        "INT",
         "FLOAT",
         "STRING",
     }
@@ -52,8 +50,8 @@ class CalcLexer(Lexer):
     NEQ = "!="
     EQ = "=="
 
-    NUM = r"\d+"
-    FLOAT = r"\d+\.\d+"
+    INT = r"\d+"
+    FLOAT = r"\d*\.\d*"
     STRING = r'"[^"]*"'
 
     ID = r"[a-zA-Z_][a-zA-Z0-9_]*"
@@ -77,4 +75,4 @@ if __name__ == "__main__":
     lexer = CalcLexer()
 
     for tok in lexer.tokenize(data):
-        print(f"type={tok.type:<10} value={tok.value!r:<20} lineno={tok.lineno}")
+        print(f"({tok.lineno}): {tok.type}({tok.value})")
