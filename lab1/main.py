@@ -38,6 +38,10 @@ class CalcLexer(Lexer):
     def ignore_newline(self, t):
         self.lineno += len(t.value)
 
+    def error(self, t):
+        print(f"({self.lineno}): Illegal character {t.value[0]}")
+        self.index += 1
+
     ignore = " \t"
     ignore_comment = r"\#.*"
 
