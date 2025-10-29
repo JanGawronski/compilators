@@ -58,9 +58,12 @@ class Scanner(Lexer):
     NEQ = "!="
     EQ = "=="
 
-    FLOAT = r"(\d*\.\d+)|(\d+\.\d*)"
+    FLOAT = r"(\d+\.\d*|\d*\.\d+)([Ee][+-]?\d+)?"
     INT = r"\d+"
-    STRING = r'"[^"]*"'
+    @_(r'"[^"]*"')
+    def STRING(self, t):
+        self.lineno += t.value.count("\n")
+        return t
 
     ID = r"[a-zA-Z_][a-zA-Z0-9_]*"
     ID["if"] = "IF"
@@ -77,7 +80,7 @@ class Scanner(Lexer):
 
 
 if __name__ == "__main__":
-    data = open("./lab1/examples/example0.m").read()
+    data = open("./scanner/examples/example0.m").read()
 
     print("INPUT:\n", data)
     lexer = Scanner()
