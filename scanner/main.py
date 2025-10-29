@@ -1,7 +1,7 @@
 from sly import Lexer
 
 
-class CalcLexer(Lexer):
+class Scanner(Lexer):
     literals = {"+", "-", "*", "/", "(", ")", "{", "}", "[", "]", ":", ";", ",", "'", "=", "<", ">"}
 
     tokens = {
@@ -34,7 +34,7 @@ class CalcLexer(Lexer):
         "STRING",
     }
 
-    @_(r'\n+')
+    @_(r"\n+")
     def ignore_newline(self, t):
         self.lineno += len(t.value)
 
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     data = open("./lab1/examples/example0.m").read()
 
     print("INPUT:\n", data)
-    lexer = CalcLexer()
+    lexer = Scanner()
 
     for tok in lexer.tokenize(data):
         print(f"({tok.lineno}): {tok.type}({tok.value})")

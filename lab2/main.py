@@ -1,9 +1,9 @@
 import sys
-from scanner import Scanner
 from parser import Mparser
 
+from scanner.main import Scanner
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     lexer = Scanner()
     parser = Mparser()
