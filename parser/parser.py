@@ -9,12 +9,31 @@ class Mparser(Parser):
 
     debugfile = "parser.out"
 
-    # TODO: dodac negacje unarna do skanera UNMINUS
     precedence = (
         ("nonassoc", LEQ, GEQ, NEQ, EQ),
         ("left", "+", "-", DOTADD, DOTSUB),
-        ("left", "*", "/", DOTMUL, DOTDIV, UNMINUS),
+        ("left", "*", "/", DOTMUL, DOTDIV, UMINUS),
     )
+
+    @_("instructions_opt")
+    def program(p):
+        return p.instructions_opt
+
+    @_("instructions")
+    def instructions_opt(p):
+        return p.instructions
+
+    @_("")
+    def instructions_opt(p):
+        return []
+
+    @_("instructions instruction")
+    def instructions(p):
+        return p.instructions + [p.instruction]
+
+    @_("instruction")
+    def instructions(p):
+        return [p.instruction]
 
     @_('expr "+" term')
     def expr(self, p):
@@ -32,29 +51,10 @@ class Mparser(Parser):
     def expr(self, p):
         return p.expr / p.term
 
+    @_('"-" expr %prec UMINUS')
+    def expr(p):
+        return -p.expr
+
     @_("expr ADDASSIGN term")
     def expr(self, p):
         return p.expr / p.term
-
-    @_("instructions_opt")
-    def program(p):
-        pass
-
-    @_("instructions")
-    def instructions_opt(p):
-        pass
-
-    @_("")
-    def instructions_opt(p):
-        pass
-
-    @_("instructions instruction")
-    def instructions(p):
-        pass
-
-    @_("instruction")
-    def instructions(p):
-        pass
-
-    # to finish the grammar
-    # ....
