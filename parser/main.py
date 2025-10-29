@@ -1,5 +1,5 @@
 import sys
-from parser import Mparser
+from .parser import Mparser
 
 from scanner.main import Scanner
 
