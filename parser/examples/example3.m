@@ -61,5 +61,9 @@ for i = 1:N {
 }
 
 
-
-
+if (N==M)
+    if (N>0)
+        print N;
+ else {
+    print M;
+}
