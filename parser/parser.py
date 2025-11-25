@@ -13,6 +13,8 @@ class Mparser(Parser):
         ("nonassoc", ">", "<", LEQ, GEQ, NEQ, EQ),
         ("left", "+", "-", DOTADD, DOTSUB),
         ("left", "*", "/", DOTMUL, DOTDIV, UMINUS),
+        ("nonassoc", IFX),
+        ("nonassoc", ELSE)
     )
 
     @_('stmt_list')
@@ -67,7 +69,7 @@ class Mparser(Parser):
     def stmt(self, p):
         return ('ifelse', p.expr, p.stmt0, p.stmt1)
 
-    @_('IF "(" expr ")" stmt')
+    @_('IF "(" expr ")" stmt %prec IFX')
     def stmt(self, p):
         return ('if', p.expr, p.stmt)
 
