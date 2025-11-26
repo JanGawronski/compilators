@@ -15,11 +15,11 @@ class Mparser(Parser):
     debugfile = "parser.out"
 
     precedence = (
+        ("nonassoc", IFX),
+        ("nonassoc", ELSE),
         ("nonassoc", ">", "<", LEQ, GEQ, NEQ, EQ),
         ("left", "+", "-", DOTADD, DOTSUB),
         ("left", "*", "/", DOTMUL, DOTDIV, UMINUS),
-        ("nonassoc", IFX),
-        ("nonassoc", ELSE),
     )
 
     @_("stmt_list")
@@ -47,24 +47,12 @@ class Mparser(Parser):
         return p.expr
 
     @_('expr "=" expr ";"')
-    def stmt(self, p):
-        return AST.AssignOp(p.expr0, p.expr1)
-
     @_('expr ADDASSIGN expr ";"')
-    def stmt(self, p):
-        return AST.AssignOpOp(p.expr0, "+=", p.expr1)
-
     @_('expr SUBASSIGN expr ";"')
-    def stmt(self, p):
-        return AST.AssignOpOp(p.expr0, "-=", p.expr1)
-
     @_('expr MULASSIGN expr ";"')
-    def stmt(self, p):
-        return AST.AssignOpOp(p.expr0, "*=", p.expr1)
-
     @_('expr DIVASSIGN expr ";"')
     def stmt(self, p):
-        return AST.AssignOpOp(p.expr0, "/=", p.expr1)
+        return AST.BinExpr(p[1], p.expr0, p.expr1)
 
     @_('PRINT expr_list ";"')
     def stmt(self, p):
@@ -115,68 +103,29 @@ class Mparser(Parser):
         return AST.Vector(p.expr_list)
 
     @_('expr "+" expr')
-    def expr(self, p):
-        return AST.BinOp("+", p.expr0, p.expr1)
-
     @_('expr "-" expr')
-    def expr(self, p):
-        return AST.BinOp("-", p.expr0, p.expr1)
-
     @_('expr "*" expr')
-    def expr(self, p):
-        return AST.BinOp("*", p.expr0, p.expr1)
-
     @_('expr "/" expr')
-    def expr(self, p):
-        return AST.BinOp("/", p.expr0, p.expr1)
-
-    @_('expr "\'"')
-    def expr(self, p):
-        return AST.Transpose(p.expr)
-
     @_("expr DOTADD expr")
-    def expr(self, p):
-        return AST.BinOp(".+", p.expr0, p.expr1)
-
     @_("expr DOTSUB expr")
-    def expr(self, p):
-        return AST.BinOp(".-", p.expr0, p.expr1)
-
     @_("expr DOTMUL expr")
-    def expr(self, p):
-        return AST.BinOp(".*", p.expr0, p.expr1)
-
     @_("expr DOTDIV expr")
-    def expr(self, p):
-        return AST.BinOp("./", p.expr0, p.expr1)
-
     @_("expr EQ expr")
-    def expr(self, p):
-        return AST.RelOp("==", p.expr0, p.expr1)
-
     @_("expr NEQ expr")
-    def expr(self, p):
-        return AST.RelOp("!=", p.expr0, p.expr1)
-
     @_('expr "<" expr')
-    def expr(self, p):
-        return AST.RelOp("<", p.expr0, p.expr1)
-
     @_('expr ">" expr')
-    def expr(self, p):
-        return AST.RelOp(">", p.expr0, p.expr1)
-
     @_("expr LEQ expr")
-    def expr(self, p):
-        return AST.RelOp("<=", p.expr0, p.expr1)
-
     @_("expr GEQ expr")
     def expr(self, p):
-        return AST.RelOp(">=", p.expr0, p.expr1)
+        return AST.BinExpr(p[1], p.expr0, p.expr1)
 
     @_('"-" expr %prec UMINUS')
     def expr(self, p):
-        return AST.UnaryMinus(p.expr)
+        return AST.UnaryOp("-", p.expr)
+
+    @_('expr "\'"')
+    def expr(self, p):
+        return AST.UnaryOp("\'", p.expr)
 
     @_("INT")
     def expr(self, p):
@@ -195,16 +144,10 @@ class Mparser(Parser):
         return AST.Variable(p.ID)
 
     @_('ZEROS "(" expr_list ")"')
-    def expr(self, p):
-        return AST.MatrixFunction("zeros", p.expr_list)
-
     @_('ONES "(" expr_list ")"')
-    def expr(self, p):
-        return AST.MatrixFunction("ones", p.expr_list)
-
     @_('EYE "(" expr_list ")"')
     def expr(self, p):
-        return AST.MatrixFunction("eye", p.expr_list)
+        return AST.MatrixFunction(p[0], p.expr_list)
 
     @_('"(" expr ")"')
     def expr(self, p):

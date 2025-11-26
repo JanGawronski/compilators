@@ -21,6 +21,19 @@ class TreePrinter:
             if stmt is not None:
                 result += stmt.printTree(indent)
         return result
+    
+    @addToClass(AST.BinExpr)
+    def printTree(self, indent=0):
+        result = "| " * indent + self.op + "\n"
+        result += self.left.printTree(indent + 1)
+        result += self.right.printTree(indent + 1)
+        return result
+    
+    @addToClass(AST.UnaryOp)
+    def printTree(self, indent=0):
+        result = "| " * indent + self.op + "\n"
+        result += self.expr.printTree(indent + 1)
+        return result
 
     @addToClass(AST.IntNum)
     def printTree(self, indent=0):
@@ -37,34 +50,6 @@ class TreePrinter:
     @addToClass(AST.Variable)
     def printTree(self, indent=0):
         return "| " * indent + self.name + "\n"
-
-    @addToClass(AST.BinOp)
-    def printTree(self, indent=0):
-        result = "| " * indent + self.op + "\n"
-        result += self.left.printTree(indent + 1)
-        result += self.right.printTree(indent + 1)
-        return result
-
-    @addToClass(AST.RelOp)
-    def printTree(self, indent=0):
-        result = "| " * indent + self.op + "\n"
-        result += self.left.printTree(indent + 1)
-        result += self.right.printTree(indent + 1)
-        return result
-
-    @addToClass(AST.AssignOp)
-    def printTree(self, indent=0):
-        result = "| " * indent + "=\n"
-        result += self.left.printTree(indent + 1)
-        result += self.right.printTree(indent + 1)
-        return result
-
-    @addToClass(AST.AssignOpOp)
-    def printTree(self, indent=0):
-        result = "| " * indent + self.op + "\n"
-        result += self.left.printTree(indent + 1)
-        result += self.right.printTree(indent + 1)
-        return result
 
     @addToClass(AST.IfStatement)
     def printTree(self, indent=0):
@@ -133,18 +118,6 @@ class TreePrinter:
         for stmt in self.statements:
             if stmt is not None:
                 result += stmt.printTree(indent)
-        return result
-
-    @addToClass(AST.UnaryMinus)
-    def printTree(self, indent=0):
-        result = "| " * indent + "-\n"
-        result += self.expr.printTree(indent + 1)
-        return result
-
-    @addToClass(AST.Transpose)
-    def printTree(self, indent=0):
-        result = "| " * indent + "TRANSPOSE\n"
-        result += self.expr.printTree(indent + 1)
         return result
 
     @addToClass(AST.MatrixFunction)
