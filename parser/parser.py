@@ -10,11 +10,12 @@ class Mparser(Parser):
     debugfile = "parser.out"
 
     precedence = (
+        ("nonassoc", IFX),
+        ("nonassoc", ELSE),
         ("nonassoc", ">", "<", LEQ, GEQ, NEQ, EQ),
         ("left", "+", "-", DOTADD, DOTSUB),
-        ("left", "*", "/", DOTMUL, DOTDIV, UMINUS),
-        ("nonassoc", IFX),
-        ("nonassoc", ELSE)
+        ("left", "*", "/", DOTMUL, DOTDIV),
+        ("right", UMINUS),
     )
 
     @_('stmt_list')
