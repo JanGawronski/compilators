@@ -58,7 +58,7 @@ class Scanner(Lexer):
     NEQ = "!="
     EQ = "=="
 
-    FLOAT = r"(\d+\.\d*|\d*\.\d+)([Ee][+-]?\d+)?"
+    FLOAT = r"(\d+\.\d*|\.\d+)([Ee][+-]?\d+)?"
     INT = r"\d+"
     @_(r'"[^"]*"')
     def STRING(self, t):

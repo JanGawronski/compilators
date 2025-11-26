@@ -19,7 +19,8 @@ class Mparser(Parser):
         ("nonassoc", ELSE),
         ("nonassoc", ">", "<", LEQ, GEQ, NEQ, EQ),
         ("left", "+", "-", DOTADD, DOTSUB),
-        ("left", "*", "/", DOTMUL, DOTDIV, UMINUS),
+        ("left", "*", "/", DOTMUL, DOTDIV),
+        ("right", UMINUS),
     )
 
     @_("stmt_list")
