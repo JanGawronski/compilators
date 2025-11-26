@@ -1,5 +1,5 @@
 from __future__ import print_function
-import AST
+import tree_ast.AST as AST
 
 
 def addToClass(cls):

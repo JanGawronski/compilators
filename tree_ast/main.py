@@ -1,6 +1,7 @@
 import sys
 from parser.parser import Mparser
 
+import tree_ast.TreePrinter
 from scanner.main import Scanner
 
 

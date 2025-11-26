@@ -5,7 +5,7 @@ from sly import Parser
 from scanner.main import Scanner
 
 sys.path.append("..")
-import ast.AST
+import tree_ast.AST as AST
 
 
 class Mparser(Parser):
