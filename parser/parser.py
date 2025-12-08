@@ -15,110 +15,127 @@ class Mparser(Parser):
     debugfile = "parser.out"
 
     precedence = (
-        ("nonassoc", IFX),
-        ("nonassoc", ELSE),
-        ("nonassoc", ">", "<", LEQ, GEQ, NEQ, EQ),
-        ("left", "+", "-", DOTADD, DOTSUB),
-        ("left", "*", "/", DOTMUL, DOTDIV),
-        ("right", UMINUS),
+        ('nonassoc', 'IFX'),
+        ('nonassoc', 'ELSE'),
+        ('nonassoc', '<', '>', 'LEQ', 'GEQ', 'NEQ', 'EQ'),
+        ('left', '+', '-'),
+        ('left', 'DOTADD', 'DOTSUB'),
+        ('left', '*', '/'),
+        ('left', 'DOTMUL', 'DOTDIV'),
+        ('right', 'UMINUS'),
+        ('left', "'"),
     )
 
-    @_("stmt_list")
+    @_('instructions')
     def program(self, p):
-        return AST.Program(p.stmt_list)
+        return AST.Program(p.instructions)
 
-    @_("stmt_list stmt")
-    def stmt_list(self, p):
-        return p.stmt_list + [p.stmt]
+    @_('instruction')
+    def instructions(self, p):
+        return [p.instruction]
 
-    @_('"{" stmt_list "}"')
-    def stmt(self, p):
-        return AST.Block(p.stmt_list)
+    @_('instructions instruction')
+    def instructions(self, p):
+        return p.instructions + [p.instruction]
 
+    @_('statement ";"')
+    def instruction(self, p):
+        return p.statement
+
+    @_('"{" instructions "}"')
+    def instruction(self, p):
+        return AST.Block(p.instructions)
+    
     @_('"{" "}"')
-    def stmt(self, p):
+    def instruction(self, p):
         return AST.Block([])
 
-    @_("stmt")
-    def stmt_list(self, p):
-        return [p.stmt]
-
-    @_('expr ";"')
-    def stmt(self, p):
+    @_('"(" expr ")"')
+    def expr(self, p):
         return p.expr
 
-    @_('expr "=" expr ";"')
-    @_('expr ADDASSIGN expr ";"')
-    @_('expr SUBASSIGN expr ";"')
-    @_('expr MULASSIGN expr ";"')
-    @_('expr DIVASSIGN expr ";"')
-    def stmt(self, p):
-        return AST.BinExpr(p[1], p.expr0, p.expr1)
+    @_('IF "(" condition ")" instruction %prec IFX')
+    def instruction(self, p):
+        return AST.IfStatement(p.condition, p.instruction)
 
-    @_('PRINT expr_list ";"')
-    def stmt(self, p):
-        return AST.Print(p.expr_list)
+    @_('IF "(" condition ")" instruction ELSE instruction')
+    def instruction(self, p):
+        return AST.IfElseStatement(p.condition, p.instruction0, p.instruction1)
+    
+    @_('WHILE "(" condition ")" instruction')
+    def instruction(self, p):
+        return AST.WhileLoop(p.condition, p.instruction)
+    
+    @_('FOR ID "=" expr ":" expr instruction')
+    def instruction(self, p):
+        return AST.ForLoop(p.ID, p.expr0, p.expr1, p.instruction)
 
-    @_('IF "(" expr ")" stmt ELSE stmt')
-    def stmt(self, p):
-        return AST.IfElseStatement(p.expr, p.stmt0, p.stmt1)
+    @_('EQ', 'NEQ', 'LEQ', 'GEQ', '">"', '"<"')
+    def comparator(self, p):
+        return p[0]
 
-    @_('IF "(" expr ")" stmt %prec IFX')
-    def stmt(self, p):
-        return AST.IfStatement(p.expr, p.stmt)
+    @_('expr comparator expr')
+    def condition(self, p):
+        return AST.BinExpr(p.comparator, p.expr0, p.expr1)
 
-    @_('WHILE "(" expr ")" stmt')
-    def stmt(self, p):
-        return AST.WhileLoop(p.expr, p.stmt)
+    @_('MULASSIGN', 'DIVASSIGN', 'SUBASSIGN', 'ADDASSIGN', '"="')
+    def assign_op(self, p):
+        return p[0]
 
-    @_('FOR ID "=" expr ":" expr stmt')
-    def stmt(self, p):
-        return AST.ForLoop(p.ID, p.expr0, p.expr1, p.stmt)
+    @_('element assign_op expr')
+    def statement(self, p):
+        return AST.BinExpr(p[1], p.element, p.expr)
 
-    @_('BREAK ";"')
-    def stmt(self, p):
-        return AST.Break()
+    @_('ID assign_op expr')
+    def statement(self, p):
+        return AST.BinExpr(p[1], AST.Variable(p.ID), p.expr)
 
-    @_('CONTINUE ";"')
-    def stmt(self, p):
-        return AST.Continue()
-
-    @_('RETURN expr ";"')
-    def stmt(self, p):
-        return AST.Return(p.expr)
-
-    @_('expr "," expr_list')
-    def expr_list(self, p):
-        return [p.expr] + p.expr_list
-
-    @_("expr")
-    def expr_list(self, p):
-        return [p.expr]
-
-    @_('expr "[" expr_list "]"')
+    @_('function_name "(" var_args ")"')
     def expr(self, p):
-        return AST.MatrixIndex(p.expr, p.expr_list)
+        return AST.MatrixFunction(p[0], p.var_args)
+    
+    @_('EYE', 'ONES', 'ZEROS')
+    def function_name(self, p):
+        return p[0]
 
-    @_('"[" expr_list "]"')
-    def expr(self, p):
-        return AST.Vector(p.expr_list)
+    @_('"[" var_args "]"')
+    def matrix(self, p):
+        return AST.Vector(p.var_args)
 
-    @_('expr "+" expr')
-    @_('expr "-" expr')
-    @_('expr "*" expr')
-    @_('expr "/" expr')
-    @_("expr DOTADD expr")
-    @_("expr DOTSUB expr")
-    @_("expr DOTMUL expr")
-    @_("expr DOTDIV expr")
-    @_("expr EQ expr")
-    @_("expr NEQ expr")
-    @_('expr "<" expr')
-    @_('expr ">" expr')
-    @_("expr LEQ expr")
-    @_("expr GEQ expr")
+    @_('var "[" var_args "]"')
+    def element(self, p):
+        return AST.MatrixIndex(AST.Variable(p.var), p.var_args)
+
+    @_('ID')
+    def var(self, p):
+        return AST.Variable(p.ID)
+
+    @_('expr "+" expr',
+       'expr "-" expr',
+       'expr "*" expr',
+       'expr "/" expr',
+       'expr DOTADD expr',
+       'expr DOTSUB expr',
+       'expr DOTMUL expr',
+       'expr DOTDIV expr')
     def expr(self, p):
         return AST.BinExpr(p[1], p.expr0, p.expr1)
+
+    @_('var', 'matrix', 'element')
+    def expr(self, p):
+        return p[0]
+
+    @_('INT')
+    def expr(self, p):
+        return AST.IntNum(int(p.INT))
+
+    @_('FLOAT')
+    def expr(self, p):
+        return AST.FloatNum(float(p.FLOAT))
+
+    @_('STRING')
+    def expr(self, p):
+        return AST.String(str(p.STRING))
 
     @_('"-" expr %prec UMINUS')
     def expr(self, p):
@@ -128,31 +145,29 @@ class Mparser(Parser):
     def expr(self, p):
         return AST.UnaryOp("\'", p.expr)
 
-    @_("INT")
-    def expr(self, p):
-        return AST.IntNum(int(p.INT))
+    @_('BREAK')
+    def statement(self, p):
+        return AST.Break()
 
-    @_("FLOAT")
-    def expr(self, p):
-        return AST.FloatNum(float(p.FLOAT))
+    @_('CONTINUE')
+    def statement(self, p):
+        return AST.Continue()
 
-    @_("STRING")
-    def expr(self, p):
-        return AST.String(str(p.STRING))
+    @_('RETURN expr')
+    def statement(self, p):
+        return AST.Return(p.expr)
 
-    @_("ID")
-    def expr(self, p):
-        return AST.Variable(p.ID)
+    @_('PRINT var_args')
+    def statement(self, p):
+        return AST.Print(p.var_args)
 
-    @_('ZEROS "(" expr_list ")"')
-    @_('ONES "(" expr_list ")"')
-    @_('EYE "(" expr_list ")"')
-    def expr(self, p):
-        return AST.MatrixFunction(p[0], p.expr_list)
+    @_('var_args "," expr')
+    def var_args(self, p):
+        return p.var_args + [p.expr]
 
-    @_('"(" expr ")"')
-    def expr(self, p):
-        return p.expr
+    @_('expr')
+    def var_args(self, p):
+        return [p.expr]
 
     def error(self, p):
         if p:
