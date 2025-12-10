@@ -18,10 +18,8 @@ class Mparser(Parser):
         ('nonassoc', 'IFX'),
         ('nonassoc', 'ELSE'),
         ('nonassoc', '<', '>', 'LEQ', 'GEQ', 'NEQ', 'EQ'),
-        ('left', '+', '-'),
-        ('left', 'DOTADD', 'DOTSUB'),
-        ('left', '*', '/'),
-        ('left', 'DOTMUL', 'DOTDIV'),
+        ('left', '+', '-', 'DOTADD', 'DOTSUB'),
+        ('left', '*', '/', 'DOTMUL', 'DOTDIV'),
         ('right', 'UMINUS'),
         ('left', "'"),
     )

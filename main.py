@@ -6,7 +6,7 @@ from scanner import Scanner
 
 
 def main():
-    filename = sys.argv[1] if len(sys.argv) >= 2 else "examples/tree_ast/example3.m"
+    filename = sys.argv[1] if len(sys.argv) >= 2 else "examples/tree_ast/example1.m"
 
     with open(filename, "r") as file:
         text = file.read()

@@ -49,7 +49,7 @@ class TreePrinter:
 
     @addToClass(AST.Variable)
     def printTree(self, indent=0):
-        return "| " * indent + self.name + "\n"
+        return "| " * indent + str(self.name) + "\n"
 
     @addToClass(AST.IfStatement)
     def printTree(self, indent=0):

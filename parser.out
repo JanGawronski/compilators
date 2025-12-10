@@ -11,20 +11,20 @@ Rule 7     instruction -> IF ( condition ) instruction  [precedence=nonassoc, le
 Rule 8     instruction -> { }
 Rule 9     instruction -> { instructions }
 Rule 10    instruction -> statement ;
-Rule 11    expr -> expr '  [precedence=left, level=9]
-Rule 12    expr -> - expr  [precedence=right, level=8]
+Rule 11    expr -> expr '  [precedence=left, level=7]
+Rule 12    expr -> - expr  [precedence=right, level=6]
 Rule 13    expr -> STRING
 Rule 14    expr -> FLOAT
 Rule 15    expr -> INT
 Rule 16    expr -> element
 Rule 17    expr -> matrix
 Rule 18    expr -> var
-Rule 19    expr -> expr DOTDIV expr  [precedence=left, level=7]
-Rule 20    expr -> expr DOTMUL expr  [precedence=left, level=7]
-Rule 21    expr -> expr DOTSUB expr  [precedence=left, level=5]
-Rule 22    expr -> expr DOTADD expr  [precedence=left, level=5]
-Rule 23    expr -> expr / expr  [precedence=left, level=6]
-Rule 24    expr -> expr * expr  [precedence=left, level=6]
+Rule 19    expr -> expr DOTDIV expr  [precedence=left, level=5]
+Rule 20    expr -> expr DOTMUL expr  [precedence=left, level=5]
+Rule 21    expr -> expr DOTSUB expr  [precedence=left, level=4]
+Rule 22    expr -> expr DOTADD expr  [precedence=left, level=4]
+Rule 23    expr -> expr / expr  [precedence=left, level=5]
+Rule 24    expr -> expr * expr  [precedence=left, level=5]
 Rule 25    expr -> expr - expr  [precedence=left, level=4]
 Rule 26    expr -> expr + expr  [precedence=left, level=4]
 Rule 27    expr -> function_name ( var_args )
@@ -2428,6 +2428,8 @@ state 85
     (24) expr -> expr . * expr
     (25) expr -> expr . - expr
     (26) expr -> expr . + expr
+    DOTDIV          reduce using rule 23 (expr -> expr / expr .)
+    DOTMUL          reduce using rule 23 (expr -> expr / expr .)
     DOTSUB          reduce using rule 23 (expr -> expr / expr .)
     DOTADD          reduce using rule 23 (expr -> expr / expr .)
     /               reduce using rule 23 (expr -> expr / expr .)
@@ -2455,8 +2457,6 @@ state 85
     BREAK           reduce using rule 23 (expr -> expr / expr .)
     ID              reduce using rule 23 (expr -> expr / expr .)
     '               shift and go to state 55
-    DOTDIV          shift and go to state 56
-    DOTMUL          shift and go to state 57
 
 
 state 86
@@ -2471,6 +2471,8 @@ state 86
     (24) expr -> expr . * expr
     (25) expr -> expr . - expr
     (26) expr -> expr . + expr
+    DOTDIV          reduce using rule 24 (expr -> expr * expr .)
+    DOTMUL          reduce using rule 24 (expr -> expr * expr .)
     DOTSUB          reduce using rule 24 (expr -> expr * expr .)
     DOTADD          reduce using rule 24 (expr -> expr * expr .)
     /               reduce using rule 24 (expr -> expr * expr .)
@@ -2498,8 +2500,6 @@ state 86
     BREAK           reduce using rule 24 (expr -> expr * expr .)
     ID              reduce using rule 24 (expr -> expr * expr .)
     '               shift and go to state 55
-    DOTDIV          shift and go to state 56
-    DOTMUL          shift and go to state 57
 
 
 state 87
@@ -2514,6 +2514,8 @@ state 87
     (24) expr -> expr . * expr
     (25) expr -> expr . - expr
     (26) expr -> expr . + expr
+    DOTSUB          reduce using rule 25 (expr -> expr - expr .)
+    DOTADD          reduce using rule 25 (expr -> expr - expr .)
     -               reduce using rule 25 (expr -> expr - expr .)
     +               reduce using rule 25 (expr -> expr - expr .)
     ,               reduce using rule 25 (expr -> expr - expr .)
@@ -2539,8 +2541,6 @@ state 87
     '               shift and go to state 55
     DOTDIV          shift and go to state 56
     DOTMUL          shift and go to state 57
-    DOTSUB          shift and go to state 58
-    DOTADD          shift and go to state 59
     /               shift and go to state 60
     *               shift and go to state 61
 
@@ -2557,6 +2557,8 @@ state 88
     (24) expr -> expr . * expr
     (25) expr -> expr . - expr
     (26) expr -> expr . + expr
+    DOTSUB          reduce using rule 26 (expr -> expr + expr .)
+    DOTADD          reduce using rule 26 (expr -> expr + expr .)
     -               reduce using rule 26 (expr -> expr + expr .)
     +               reduce using rule 26 (expr -> expr + expr .)
     ,               reduce using rule 26 (expr -> expr + expr .)
@@ -2582,8 +2584,6 @@ state 88
     '               shift and go to state 55
     DOTDIV          shift and go to state 56
     DOTMUL          shift and go to state 57
-    DOTSUB          shift and go to state 58
-    DOTADD          shift and go to state 59
     /               shift and go to state 60
     *               shift and go to state 61
 
