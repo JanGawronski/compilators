@@ -2,10 +2,10 @@ import sys
 
 from sly import Parser
 
-from scanner.main import Scanner
+from scanner import Scanner
 
 sys.path.append("..")
-import tree_ast.AST as AST
+import AST as AST
 
 
 class Mparser(Parser):
