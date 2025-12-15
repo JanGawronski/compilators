@@ -39,6 +39,10 @@ class Mparser(Parser):
     @_('statement ";"')
     def instruction(self, p):
         return p.statement
+    
+    @_('";"')
+    def instruction(self, p):
+        return AST.Block([])
 
     @_('"{" instructions "}"')
     def instruction(self, p):
