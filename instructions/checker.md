@@ -16,5 +16,5 @@ Analizator semantyczny powinien wykrywać m.in. następujące błędy semantyczn
 
 Analiza błędów semantycznych nie powinna być przerywana po napotkaniu pierwszego błędu, lecz wykrywać jak największą liczbę błędów. Z każdym błędem powinna być skojarzona informacja o miejscu wystąpienia błędu (nr linii, ew. numer kolumny).
 
-Do implementacji zadania należy skorzystać z wzorca visitor. W tym celu w klasie TypeChecker należy zdefiniować metody visit_<classname>, każdej klasie z AST będzie odpowiadała jedna metoda. Omówienie wzorca wizytor można znaleźć w A. Allen, Modern Compiler Implementation in Java, 2nd ed., Chapt. 4.
+Do implementacji zadania należy skorzystać z wzorca visitor. W tym celu w klasie `TypeChecker` należy zdefiniować metody `visit_<classname>`, każdej klasie z AST będzie odpowiadała jedna metoda. Omówienie wzorca wizytor można znaleźć w A. Allen, Modern Compiler Implementation in Java, 2nd ed., Chapt. 4.
 
