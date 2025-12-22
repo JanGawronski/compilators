@@ -80,7 +80,7 @@ class Scanner(Lexer):
 
 
 if __name__ == "__main__":
-    data = open("./scanner/examples/example0.m").read()
+    data = open("./examples/scanner/example0.m").read()
 
     print("INPUT:\n", data)
     lexer = Scanner()

@@ -1,18 +1,30 @@
 class SymbolTable(object):
     def __init__(self, parent, name):
-        pass
-    
+        self.parent = parent
+        self.name = name
+        self.symbols = {}
+
     def put(self, name, symbol):
-        pass
+        if not self.parent:
+            self.symbols[name] = symbol
+        elif self.parent.get(name) is not None:
+            self.parent.put(name, symbol)
+        else:
+            self.symbols[name] = symbol
     
     def get(self, name):
-        pass
+        if name in self.symbols:
+            return self.symbols[name]
+        elif self.parent:
+            return self.parent.get(name)
+        else:
+            return None
 
     def getParentScope(self):
-        pass
+        return self.parent
 
     def pushScope(self, name):
-        pass
+        return SymbolTable(self, name)
     
     def popScope(self):
-        pass
+        return self.parent

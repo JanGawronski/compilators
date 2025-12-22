@@ -1,12 +1,6 @@
-import sys
-
 from sly import Parser
-
 from scanner import Scanner
-
-sys.path.append("..")
 import AST as AST
-
 
 class Mparser(Parser):
 
@@ -42,43 +36,43 @@ class Mparser(Parser):
     
     @_('";"')
     def instruction(self, p):
-        return AST.Block([])
+        return AST.Block([], p.lineno)
 
     @_('"{" instructions "}"')
     def instruction(self, p):
-        return AST.Block(p.instructions)
+        return AST.Block(p.instructions, p.lineno)
     
     @_('"{" "}"')
     def instruction(self, p):
-        return AST.Block([])
-
+        return AST.Block([], p.lineno)
+    
     @_('"(" expr ")"')
     def expr(self, p):
         return p.expr
 
     @_('IF "(" condition ")" instruction %prec IFX')
     def instruction(self, p):
-        return AST.IfStatement(p.condition, p.instruction)
+        return AST.IfStatement(p.condition, p.instruction, p.lineno)
 
     @_('IF "(" condition ")" instruction ELSE instruction')
     def instruction(self, p):
-        return AST.IfElseStatement(p.condition, p.instruction0, p.instruction1)
+        return AST.IfElseStatement(p.condition, p.instruction0, p.instruction1, p.lineno)
     
     @_('WHILE "(" condition ")" instruction')
     def instruction(self, p):
-        return AST.WhileLoop(p.condition, p.instruction)
+        return AST.WhileLoop(p.condition, p.instruction, p.lineno)
     
     @_('FOR ID "=" expr ":" expr instruction')
     def instruction(self, p):
-        return AST.ForLoop(p.ID, p.expr0, p.expr1, p.instruction)
-
+        return AST.ForLoop(p.ID, p.expr0, p.expr1, p.instruction, p.lineno)
+    
     @_('EQ', 'NEQ', 'LEQ', 'GEQ', '">"', '"<"')
     def comparator(self, p):
         return p[0]
 
     @_('expr comparator expr')
     def condition(self, p):
-        return AST.BinExpr(p.comparator, p.expr0, p.expr1)
+        return AST.BinExpr(p.comparator, p.expr0, p.expr1, p.lineno)
 
     @_('MULASSIGN', 'DIVASSIGN', 'SUBASSIGN', 'ADDASSIGN', '"="')
     def assign_op(self, p):
@@ -86,15 +80,15 @@ class Mparser(Parser):
 
     @_('element assign_op expr')
     def statement(self, p):
-        return AST.BinExpr(p[1], p.element, p.expr)
+        return AST.BinExpr(p[1], p.element, p.expr, p.lineno)
 
     @_('ID assign_op expr')
     def statement(self, p):
-        return AST.BinExpr(p[1], AST.Variable(p.ID), p.expr)
-
+        return AST.BinExpr(p[1], AST.Variable(p.ID, True, p.lineno), p.expr, p.lineno)
+    
     @_('function_name "(" var_args ")"')
     def expr(self, p):
-        return AST.MatrixFunction(p[0], p.var_args)
+        return AST.MatrixFunction(p[0], p.var_args, p.lineno)
     
     @_('EYE', 'ONES', 'ZEROS')
     def function_name(self, p):
@@ -102,16 +96,16 @@ class Mparser(Parser):
 
     @_('"[" var_args "]"')
     def matrix(self, p):
-        return AST.Vector(p.var_args)
+        return AST.Vector(p.var_args, p.lineno)
 
     @_('var "[" var_args "]"')
     def element(self, p):
-        return AST.MatrixIndex(AST.Variable(p.var), p.var_args)
-
+        return AST.MatrixIndex(p.var, p.var_args, p.lineno)
+    
     @_('ID')
     def var(self, p):
-        return AST.Variable(p.ID)
-
+        return AST.Variable(p.ID, False, p.lineno)
+    
     @_('expr "+" expr',
        'expr "-" expr',
        'expr "*" expr',
@@ -121,7 +115,7 @@ class Mparser(Parser):
        'expr DOTMUL expr',
        'expr DOTDIV expr')
     def expr(self, p):
-        return AST.BinExpr(p[1], p.expr0, p.expr1)
+        return AST.BinExpr(p[1], p.expr0, p.expr1, p.lineno)
 
     @_('var', 'matrix', 'element')
     def expr(self, p):
@@ -129,40 +123,40 @@ class Mparser(Parser):
 
     @_('INT')
     def expr(self, p):
-        return AST.IntNum(int(p.INT))
+        return AST.IntNum(int(p.INT), p.lineno)
 
     @_('FLOAT')
     def expr(self, p):
-        return AST.FloatNum(float(p.FLOAT))
-
+        return AST.FloatNum(float(p.FLOAT), p.lineno)
+    
     @_('STRING')
     def expr(self, p):
-        return AST.String(str(p.STRING))
+        return AST.String(str(p.STRING), p.lineno)
 
     @_('"-" expr %prec UMINUS')
     def expr(self, p):
-        return AST.UnaryOp("-", p.expr)
+        return AST.UnaryOp("-", p.expr, p.lineno)
 
     @_('expr "\'"')
     def expr(self, p):
-        return AST.UnaryOp("\'", p.expr)
-
+        return AST.UnaryOp("\'", p.expr, p.lineno)
+    
     @_('BREAK')
     def statement(self, p):
-        return AST.Break()
+        return AST.Break(p.lineno)
 
     @_('CONTINUE')
     def statement(self, p):
-        return AST.Continue()
-
+        return AST.Continue(p.lineno)
+    
     @_('RETURN expr')
     def statement(self, p):
-        return AST.Return(p.expr)
+        return AST.Return(p.expr, p.lineno)
 
     @_('PRINT var_args')
     def statement(self, p):
-        return AST.Print(p.var_args)
-
+        return AST.Print(p.var_args, p.lineno)
+    
     @_('var_args "," expr')
     def var_args(self, p):
         return p.var_args + [p.expr]

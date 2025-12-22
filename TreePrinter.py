@@ -1,4 +1,3 @@
-from __future__ import print_function
 import AST as AST
 
 
@@ -18,7 +17,7 @@ class TreePrinter:
 
     @addToClass(AST.Program)
     def printTree(self, indent=0):
-        return "".join([stmt.printTree(indent) for stmt in self.statements if stmt is not None])
+        return "".join([instruction.printTree(indent) for instruction in self.instructions if instruction is not None])
     
     @addToClass(AST.BinExpr)
     def printTree(self, indent=0):
