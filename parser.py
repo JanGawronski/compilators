@@ -158,12 +158,18 @@ class Mparser(Parser):
         return AST.Print(p.var_args, p.lineno)
     
     @_('var_args "," expr')
+    @_('var_args "," range_expr')
     def var_args(self, p):
-        return p.var_args + [p.expr]
+        return p.var_args + [p[2]]
 
     @_('expr')
+    @_('range_expr')
     def var_args(self, p):
-        return [p.expr]
+        return [p[0]]
+    
+    @_('expr ":" expr')
+    def range_expr(self, p):
+        return AST.Range(p.expr0, p.expr1, p.lineno)
 
     def error(self, p):
         if p:

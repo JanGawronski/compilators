@@ -72,7 +72,7 @@ class TreePrinter:
     def printTree(self, indent=0):
         return printElement("FOR", indent) + \
                printElement(self.variable, indent + 1) + \
-               AST.Range(self.start, self.end).printTree(indent + 1) + \
+               AST.Range(self.start, self.end, self.lineno).printTree(indent + 1) + \
                self.statement.printTree(indent + 1)
 
     @addToClass(AST.Range)

@@ -68,9 +68,10 @@ class ForLoop(Node):
         self.lineno = lineno
 
 class Range(Node):
-    def __init__(self, start, end):
+    def __init__(self, start, end, lineno):
         self.start = start
         self.end = end
+        self.lineno = lineno
 
 class Break(Node):
     def __init__(self, lineno):
