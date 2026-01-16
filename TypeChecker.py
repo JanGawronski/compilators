@@ -22,10 +22,10 @@ class TypeChecker(object):
         return visitor(node)
     
     def visit_Program(self, node):
+        errors = []        
         for instruction in node.instructions:
-            _, _, errors = self.visit(instruction)
-            for error in errors:
-                print(error)
+            errors.extend(self.visit(instruction)[2])
+        return errors
 
     def visit_BinExpr(self, node):
         left_type, left_value, left_errors = self.visit(node.left)
@@ -173,23 +173,16 @@ class TypeChecker(object):
         return (None, None, [])
 
     def visit_ForLoop(self, node):
-        start_type, start_value, start_errors = self.visit(node.start)
-        end_type, end_value, end_errors = self.visit(node.end)
+        _, _, range_errors = self.visit(node.range)
 
         self.symbol_table = self.symbol_table.pushScope("for")
         self.symbol_table.put(node.variable, ('int', None))
         _, _, inside_errors = self.visit(node.statement)
         self.symbol_table = self.symbol_table.popScope()
 
-        if start_errors or end_errors:
-            return ('error', None, start_errors + end_errors + inside_errors)
-        
-        if start_type != 'int' or end_type != 'int':
-            return ('error', None, [f"Start and end expressions in for loop must be integers on line {node.lineno}"] + inside_errors)
-        
-        if inside_errors:
-            return ('error', None, inside_errors)
-        
+        if range_errors or inside_errors:
+            return ('error', None, range_errors + inside_errors)
+         
         return (None, None, [])
 
     def visit_Range(self, node):

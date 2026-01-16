@@ -62,9 +62,9 @@ class Mparser(Parser):
     def instruction(self, p):
         return AST.WhileLoop(p.condition, p.instruction, p.lineno)
     
-    @_('FOR ID "=" expr ":" expr instruction')
+    @_('FOR ID "=" range_expr instruction')
     def instruction(self, p):
-        return AST.ForLoop(p.ID, p.expr0, p.expr1, p.instruction, p.lineno)
+        return AST.ForLoop(p.ID, p.range_expr, p.instruction, p.lineno)
     
     @_('EQ', 'NEQ', 'LEQ', 'GEQ', '">"', '"<"')
     def comparator(self, p):

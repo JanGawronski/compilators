@@ -4,7 +4,7 @@ Rule 0     S' -> program
 Rule 1     program -> instructions
 Rule 2     instructions -> instructions instruction
 Rule 3     instructions -> instruction
-Rule 4     instruction -> FOR ID = expr : expr instruction
+Rule 4     instruction -> FOR ID = range_expr instruction
 Rule 5     instruction -> WHILE ( condition ) instruction
 Rule 6     instruction -> IF ( condition ) instruction ELSE instruction  [precedence=nonassoc, level=2]
 Rule 7     instruction -> IF ( condition ) instruction  [precedence=nonassoc, level=1]
@@ -70,7 +70,7 @@ Terminals, with rules where they appear:
 ,                    : 56 57
 -                    : 13 26
 /                    : 24
-:                    : 4 58
+:                    : 58
 ;                    : 10 11
 <                    : 30
 =                    : 4 37
@@ -114,13 +114,13 @@ assign_op            : 46 47
 comparator           : 36
 condition            : 5 6 7
 element              : 17 47
-expr                 : 4 4 12 13 20 20 21 21 22 22 23 23 24 24 25 25 26 26 27 27 29 36 36 43 46 47 55 57 58 58
+expr                 : 12 13 20 20 21 21 22 22 23 23 24 24 25 25 26 26 27 27 29 36 36 43 46 47 55 57 58 58
 function_name        : 28
 instruction          : 2 3 4 5 6 6 7
 instructions         : 1 2 9
 matrix               : 18
 program              : 0
-range_expr           : 54 56
+range_expr           : 4 54 56
 statement            : 11
 var                  : 19 52
 var_args             : 28 42 51 52 56 57
@@ -132,7 +132,7 @@ state 0
     (1) program -> . instructions
     (2) instructions -> . instructions instruction
     (3) instructions -> . instruction
-    (4) instruction -> . FOR ID = expr : expr instruction
+    (4) instruction -> . FOR ID = range_expr instruction
     (5) instruction -> . WHILE ( condition ) instruction
     (6) instruction -> . IF ( condition ) instruction ELSE instruction
     (7) instruction -> . IF ( condition ) instruction
@@ -175,7 +175,7 @@ state 2
 
     (1) program -> instructions .
     (2) instructions -> instructions . instruction
-    (4) instruction -> . FOR ID = expr : expr instruction
+    (4) instruction -> . FOR ID = range_expr instruction
     (5) instruction -> . WHILE ( condition ) instruction
     (6) instruction -> . IF ( condition ) instruction ELSE instruction
     (7) instruction -> . IF ( condition ) instruction
@@ -227,7 +227,7 @@ state 3
 
 state 4
 
-    (4) instruction -> FOR . ID = expr : expr instruction
+    (4) instruction -> FOR . ID = range_expr instruction
     ID              shift and go to state 18
 
 
@@ -268,7 +268,7 @@ state 8
     (9) instruction -> { . instructions }
     (2) instructions -> . instructions instruction
     (3) instructions -> . instruction
-    (4) instruction -> . FOR ID = expr : expr instruction
+    (4) instruction -> . FOR ID = range_expr instruction
     (5) instruction -> . WHILE ( condition ) instruction
     (6) instruction -> . IF ( condition ) instruction ELSE instruction
     (7) instruction -> . IF ( condition ) instruction
@@ -474,7 +474,7 @@ state 17
 
 state 18
 
-    (4) instruction -> FOR ID . = expr : expr instruction
+    (4) instruction -> FOR ID . = range_expr instruction
     =               shift and go to state 50
 
 
@@ -712,7 +712,7 @@ state 28
 
     (9) instruction -> { instructions . }
     (2) instructions -> instructions . instruction
-    (4) instruction -> . FOR ID = expr : expr instruction
+    (4) instruction -> . FOR ID = range_expr instruction
     (5) instruction -> . WHILE ( condition ) instruction
     (6) instruction -> . IF ( condition ) instruction ELSE instruction
     (7) instruction -> . IF ( condition ) instruction
@@ -1335,7 +1335,8 @@ state 49
 
 state 50
 
-    (4) instruction -> FOR ID = . expr : expr instruction
+    (4) instruction -> FOR ID = . range_expr instruction
+    (58) range_expr -> . expr : expr
     (12) expr -> . expr '
     (13) expr -> . - expr
     (14) expr -> . STRING
@@ -1371,7 +1372,8 @@ state 50
     ONES            shift and go to state 45
     EYE             shift and go to state 46
 
-    expr                           shift and go to state 73
+    range_expr                     shift and go to state 73
+    expr                           shift and go to state 74
     element                        shift and go to state 37
     matrix                         shift and go to state 38
     var                            shift and go to state 39
@@ -1404,7 +1406,7 @@ state 51
 state 52
 
     (5) instruction -> WHILE ( condition . ) instruction
-    )               shift and go to state 74
+    )               shift and go to state 75
 
 
 state 53
@@ -1434,20 +1436,20 @@ state 53
     *               shift and go to state 64
     -               shift and go to state 65
     +               shift and go to state 66
-    <               shift and go to state 76
-    >               shift and go to state 77
-    GEQ             shift and go to state 78
-    LEQ             shift and go to state 79
-    NEQ             shift and go to state 80
-    EQ              shift and go to state 81
+    <               shift and go to state 77
+    >               shift and go to state 78
+    GEQ             shift and go to state 79
+    LEQ             shift and go to state 80
+    NEQ             shift and go to state 81
+    EQ              shift and go to state 82
 
-    comparator                     shift and go to state 75
+    comparator                     shift and go to state 76
 
 state 54
 
     (6) instruction -> IF ( condition . ) instruction ELSE instruction
     (7) instruction -> IF ( condition . ) instruction
-    )               shift and go to state 82
+    )               shift and go to state 83
 
 
 state 55
@@ -1508,8 +1510,8 @@ state 56
     ONES            shift and go to state 45
     EYE             shift and go to state 46
 
-    range_expr                     shift and go to state 83
-    expr                           shift and go to state 84
+    range_expr                     shift and go to state 84
+    expr                           shift and go to state 85
     element                        shift and go to state 37
     matrix                         shift and go to state 38
     var                            shift and go to state 39
@@ -1553,7 +1555,7 @@ state 57
     ONES            shift and go to state 45
     EYE             shift and go to state 46
 
-    expr                           shift and go to state 85
+    expr                           shift and go to state 86
     element                        shift and go to state 37
     matrix                         shift and go to state 38
     var                            shift and go to state 39
@@ -1631,7 +1633,7 @@ state 59
     ONES            shift and go to state 45
     EYE             shift and go to state 46
 
-    expr                           shift and go to state 86
+    expr                           shift and go to state 87
     element                        shift and go to state 37
     matrix                         shift and go to state 38
     var                            shift and go to state 39
@@ -1675,7 +1677,7 @@ state 60
     ONES            shift and go to state 45
     EYE             shift and go to state 46
 
-    expr                           shift and go to state 87
+    expr                           shift and go to state 88
     element                        shift and go to state 37
     matrix                         shift and go to state 38
     var                            shift and go to state 39
@@ -1719,7 +1721,7 @@ state 61
     ONES            shift and go to state 45
     EYE             shift and go to state 46
 
-    expr                           shift and go to state 88
+    expr                           shift and go to state 89
     element                        shift and go to state 37
     matrix                         shift and go to state 38
     var                            shift and go to state 39
@@ -1763,7 +1765,7 @@ state 62
     ONES            shift and go to state 45
     EYE             shift and go to state 46
 
-    expr                           shift and go to state 89
+    expr                           shift and go to state 90
     element                        shift and go to state 37
     matrix                         shift and go to state 38
     var                            shift and go to state 39
@@ -1807,7 +1809,7 @@ state 63
     ONES            shift and go to state 45
     EYE             shift and go to state 46
 
-    expr                           shift and go to state 90
+    expr                           shift and go to state 91
     element                        shift and go to state 37
     matrix                         shift and go to state 38
     var                            shift and go to state 39
@@ -1851,7 +1853,7 @@ state 64
     ONES            shift and go to state 45
     EYE             shift and go to state 46
 
-    expr                           shift and go to state 91
+    expr                           shift and go to state 92
     element                        shift and go to state 37
     matrix                         shift and go to state 38
     var                            shift and go to state 39
@@ -1895,7 +1897,7 @@ state 65
     ONES            shift and go to state 45
     EYE             shift and go to state 46
 
-    expr                           shift and go to state 92
+    expr                           shift and go to state 93
     element                        shift and go to state 37
     matrix                         shift and go to state 38
     var                            shift and go to state 39
@@ -1939,7 +1941,7 @@ state 66
     ONES            shift and go to state 45
     EYE             shift and go to state 46
 
-    expr                           shift and go to state 93
+    expr                           shift and go to state 94
     element                        shift and go to state 37
     matrix                         shift and go to state 38
     var                            shift and go to state 39
@@ -2032,7 +2034,7 @@ state 68
     EYE             shift and go to state 46
 
     function_name                  shift and go to state 40
-    var_args                       shift and go to state 94
+    var_args                       shift and go to state 95
     range_expr                     shift and go to state 31
     expr                           shift and go to state 32
     element                        shift and go to state 37
@@ -2051,7 +2053,7 @@ state 69
     (25) expr -> expr . * expr
     (26) expr -> expr . - expr
     (27) expr -> expr . + expr
-    )               shift and go to state 95
+    )               shift and go to state 96
     '               shift and go to state 58
     DOTDIV          shift and go to state 59
     DOTMUL          shift and go to state 60
@@ -2068,7 +2070,7 @@ state 70
     (51) matrix -> [ var_args . ]
     (56) var_args -> var_args . , range_expr
     (57) var_args -> var_args . , expr
-    ]               shift and go to state 96
+    ]               shift and go to state 97
     ,               shift and go to state 56
 
 
@@ -2101,38 +2103,14 @@ state 72
     (52) element -> var [ var_args . ]
     (56) var_args -> var_args . , range_expr
     (57) var_args -> var_args . , expr
-    ]               shift and go to state 97
+    ]               shift and go to state 98
     ,               shift and go to state 56
 
 
 state 73
 
-    (4) instruction -> FOR ID = expr . : expr instruction
-    (12) expr -> expr . '
-    (20) expr -> expr . DOTDIV expr
-    (21) expr -> expr . DOTMUL expr
-    (22) expr -> expr . DOTSUB expr
-    (23) expr -> expr . DOTADD expr
-    (24) expr -> expr . / expr
-    (25) expr -> expr . * expr
-    (26) expr -> expr . - expr
-    (27) expr -> expr . + expr
-    :               shift and go to state 98
-    '               shift and go to state 58
-    DOTDIV          shift and go to state 59
-    DOTMUL          shift and go to state 60
-    DOTSUB          shift and go to state 61
-    DOTADD          shift and go to state 62
-    /               shift and go to state 63
-    *               shift and go to state 64
-    -               shift and go to state 65
-    +               shift and go to state 66
-
-
-state 74
-
-    (5) instruction -> WHILE ( condition ) . instruction
-    (4) instruction -> . FOR ID = expr : expr instruction
+    (4) instruction -> FOR ID = range_expr . instruction
+    (4) instruction -> . FOR ID = range_expr instruction
     (5) instruction -> . WHILE ( condition ) instruction
     (6) instruction -> . IF ( condition ) instruction ELSE instruction
     (7) instruction -> . IF ( condition ) instruction
@@ -2164,7 +2142,66 @@ state 74
     element                        shift and go to state 15
     var                            shift and go to state 16
 
+state 74
+
+    (58) range_expr -> expr . : expr
+    (12) expr -> expr . '
+    (20) expr -> expr . DOTDIV expr
+    (21) expr -> expr . DOTMUL expr
+    (22) expr -> expr . DOTSUB expr
+    (23) expr -> expr . DOTADD expr
+    (24) expr -> expr . / expr
+    (25) expr -> expr . * expr
+    (26) expr -> expr . - expr
+    (27) expr -> expr . + expr
+    :               shift and go to state 57
+    '               shift and go to state 58
+    DOTDIV          shift and go to state 59
+    DOTMUL          shift and go to state 60
+    DOTSUB          shift and go to state 61
+    DOTADD          shift and go to state 62
+    /               shift and go to state 63
+    *               shift and go to state 64
+    -               shift and go to state 65
+    +               shift and go to state 66
+
+
 state 75
+
+    (5) instruction -> WHILE ( condition ) . instruction
+    (4) instruction -> . FOR ID = range_expr instruction
+    (5) instruction -> . WHILE ( condition ) instruction
+    (6) instruction -> . IF ( condition ) instruction ELSE instruction
+    (7) instruction -> . IF ( condition ) instruction
+    (8) instruction -> . { }
+    (9) instruction -> . { instructions }
+    (10) instruction -> . ;
+    (11) instruction -> . statement ;
+    (42) statement -> . PRINT var_args
+    (43) statement -> . RETURN expr
+    (44) statement -> . CONTINUE
+    (45) statement -> . BREAK
+    (46) statement -> . ID assign_op expr
+    (47) statement -> . element assign_op expr
+    (52) element -> . var [ var_args ]
+    (53) var -> . ID
+    FOR             shift and go to state 4
+    WHILE           shift and go to state 6
+    IF              shift and go to state 7
+    {               shift and go to state 8
+    ;               shift and go to state 9
+    PRINT           shift and go to state 11
+    RETURN          shift and go to state 12
+    CONTINUE        shift and go to state 13
+    BREAK           shift and go to state 14
+    ID              shift and go to state 5
+
+    instruction                    shift and go to state 100
+    statement                      shift and go to state 10
+    element                        shift and go to state 15
+    var                            shift and go to state 16
+
+state 76
 
     (36) condition -> expr comparator . expr
     (12) expr -> . expr '
@@ -2202,13 +2239,13 @@ state 75
     ONES            shift and go to state 45
     EYE             shift and go to state 46
 
-    expr                           shift and go to state 100
+    expr                           shift and go to state 101
     element                        shift and go to state 37
     matrix                         shift and go to state 38
     var                            shift and go to state 39
     function_name                  shift and go to state 40
 
-state 76
+state 77
 
     (30) comparator -> < .
     -               reduce using rule 30 (comparator -> < .)
@@ -2223,7 +2260,7 @@ state 76
     EYE             reduce using rule 30 (comparator -> < .)
 
 
-state 77
+state 78
 
     (31) comparator -> > .
     -               reduce using rule 31 (comparator -> > .)
@@ -2238,7 +2275,7 @@ state 77
     EYE             reduce using rule 31 (comparator -> > .)
 
 
-state 78
+state 79
 
     (32) comparator -> GEQ .
     -               reduce using rule 32 (comparator -> GEQ .)
@@ -2253,7 +2290,7 @@ state 78
     EYE             reduce using rule 32 (comparator -> GEQ .)
 
 
-state 79
+state 80
 
     (33) comparator -> LEQ .
     -               reduce using rule 33 (comparator -> LEQ .)
@@ -2268,7 +2305,7 @@ state 79
     EYE             reduce using rule 33 (comparator -> LEQ .)
 
 
-state 80
+state 81
 
     (34) comparator -> NEQ .
     -               reduce using rule 34 (comparator -> NEQ .)
@@ -2283,7 +2320,7 @@ state 80
     EYE             reduce using rule 34 (comparator -> NEQ .)
 
 
-state 81
+state 82
 
     (35) comparator -> EQ .
     -               reduce using rule 35 (comparator -> EQ .)
@@ -2298,11 +2335,11 @@ state 81
     EYE             reduce using rule 35 (comparator -> EQ .)
 
 
-state 82
+state 83
 
     (6) instruction -> IF ( condition ) . instruction ELSE instruction
     (7) instruction -> IF ( condition ) . instruction
-    (4) instruction -> . FOR ID = expr : expr instruction
+    (4) instruction -> . FOR ID = range_expr instruction
     (5) instruction -> . WHILE ( condition ) instruction
     (6) instruction -> . IF ( condition ) instruction ELSE instruction
     (7) instruction -> . IF ( condition ) instruction
@@ -2329,12 +2366,12 @@ state 82
     BREAK           shift and go to state 14
     ID              shift and go to state 5
 
-    instruction                    shift and go to state 101
+    instruction                    shift and go to state 102
     statement                      shift and go to state 10
     element                        shift and go to state 15
     var                            shift and go to state 16
 
-state 83
+state 84
 
     (56) var_args -> var_args , range_expr .
     ,               reduce using rule 56 (var_args -> var_args , range_expr .)
@@ -2343,7 +2380,7 @@ state 83
     )               reduce using rule 56 (var_args -> var_args , range_expr .)
 
 
-state 84
+state 85
 
     (57) var_args -> var_args , expr .
     (58) range_expr -> expr . : expr
@@ -2372,7 +2409,7 @@ state 84
     +               shift and go to state 66
 
 
-state 85
+state 86
 
     (58) range_expr -> expr : expr .
     (12) expr -> expr . '
@@ -2387,6 +2424,15 @@ state 85
     ,               reduce using rule 58 (range_expr -> expr : expr .)
     ;               reduce using rule 58 (range_expr -> expr : expr .)
     ]               reduce using rule 58 (range_expr -> expr : expr .)
+    FOR             reduce using rule 58 (range_expr -> expr : expr .)
+    WHILE           reduce using rule 58 (range_expr -> expr : expr .)
+    IF              reduce using rule 58 (range_expr -> expr : expr .)
+    {               reduce using rule 58 (range_expr -> expr : expr .)
+    PRINT           reduce using rule 58 (range_expr -> expr : expr .)
+    RETURN          reduce using rule 58 (range_expr -> expr : expr .)
+    CONTINUE        reduce using rule 58 (range_expr -> expr : expr .)
+    BREAK           reduce using rule 58 (range_expr -> expr : expr .)
+    ID              reduce using rule 58 (range_expr -> expr : expr .)
     )               reduce using rule 58 (range_expr -> expr : expr .)
     '               shift and go to state 58
     DOTDIV          shift and go to state 59
@@ -2399,7 +2445,7 @@ state 85
     +               shift and go to state 66
 
 
-state 86
+state 87
 
     (20) expr -> expr DOTDIV expr .
     (12) expr -> expr . '
@@ -2442,7 +2488,7 @@ state 86
     '               shift and go to state 58
 
 
-state 87
+state 88
 
     (21) expr -> expr DOTMUL expr .
     (12) expr -> expr . '
@@ -2485,7 +2531,7 @@ state 87
     '               shift and go to state 58
 
 
-state 88
+state 89
 
     (22) expr -> expr DOTSUB expr .
     (12) expr -> expr . '
@@ -2528,7 +2574,7 @@ state 88
     *               shift and go to state 64
 
 
-state 89
+state 90
 
     (23) expr -> expr DOTADD expr .
     (12) expr -> expr . '
@@ -2571,7 +2617,7 @@ state 89
     *               shift and go to state 64
 
 
-state 90
+state 91
 
     (24) expr -> expr / expr .
     (12) expr -> expr . '
@@ -2614,7 +2660,7 @@ state 90
     '               shift and go to state 58
 
 
-state 91
+state 92
 
     (25) expr -> expr * expr .
     (12) expr -> expr . '
@@ -2657,7 +2703,7 @@ state 91
     '               shift and go to state 58
 
 
-state 92
+state 93
 
     (26) expr -> expr - expr .
     (12) expr -> expr . '
@@ -2700,7 +2746,7 @@ state 92
     *               shift and go to state 64
 
 
-state 93
+state 94
 
     (27) expr -> expr + expr .
     (12) expr -> expr . '
@@ -2743,16 +2789,16 @@ state 93
     *               shift and go to state 64
 
 
-state 94
+state 95
 
     (28) expr -> function_name ( var_args . )
     (56) var_args -> var_args . , range_expr
     (57) var_args -> var_args . , expr
-    )               shift and go to state 102
+    )               shift and go to state 103
     ,               shift and go to state 56
 
 
-state 95
+state 96
 
     (29) expr -> ( expr ) .
     :               reduce using rule 29 (expr -> ( expr ) .)
@@ -2786,7 +2832,7 @@ state 95
     ID              reduce using rule 29 (expr -> ( expr ) .)
 
 
-state 96
+state 97
 
     (51) matrix -> [ var_args ] .
     :               reduce using rule 51 (matrix -> [ var_args ] .)
@@ -2820,7 +2866,7 @@ state 96
     ID              reduce using rule 51 (matrix -> [ var_args ] .)
 
 
-state 97
+state 98
 
     (52) element -> var [ var_args ] .
     =               reduce using rule 52 (element -> var [ var_args ] .)
@@ -2859,51 +2905,25 @@ state 97
     ID              reduce using rule 52 (element -> var [ var_args ] .)
 
 
-state 98
-
-    (4) instruction -> FOR ID = expr : . expr instruction
-    (12) expr -> . expr '
-    (13) expr -> . - expr
-    (14) expr -> . STRING
-    (15) expr -> . FLOAT
-    (16) expr -> . INT
-    (17) expr -> . element
-    (18) expr -> . matrix
-    (19) expr -> . var
-    (20) expr -> . expr DOTDIV expr
-    (21) expr -> . expr DOTMUL expr
-    (22) expr -> . expr DOTSUB expr
-    (23) expr -> . expr DOTADD expr
-    (24) expr -> . expr / expr
-    (25) expr -> . expr * expr
-    (26) expr -> . expr - expr
-    (27) expr -> . expr + expr
-    (28) expr -> . function_name ( var_args )
-    (29) expr -> . ( expr )
-    (52) element -> . var [ var_args ]
-    (51) matrix -> . [ var_args ]
-    (53) var -> . ID
-    (48) function_name -> . ZEROS
-    (49) function_name -> . ONES
-    (50) function_name -> . EYE
-    -               shift and go to state 33
-    STRING          shift and go to state 34
-    FLOAT           shift and go to state 35
-    INT             shift and go to state 36
-    (               shift and go to state 41
-    [               shift and go to state 42
-    ID              shift and go to state 43
-    ZEROS           shift and go to state 44
-    ONES            shift and go to state 45
-    EYE             shift and go to state 46
-
-    expr                           shift and go to state 103
-    element                        shift and go to state 37
-    matrix                         shift and go to state 38
-    var                            shift and go to state 39
-    function_name                  shift and go to state 40
-
 state 99
+
+    (4) instruction -> FOR ID = range_expr instruction .
+    FOR             reduce using rule 4 (instruction -> FOR ID = range_expr instruction .)
+    WHILE           reduce using rule 4 (instruction -> FOR ID = range_expr instruction .)
+    IF              reduce using rule 4 (instruction -> FOR ID = range_expr instruction .)
+    {               reduce using rule 4 (instruction -> FOR ID = range_expr instruction .)
+    ;               reduce using rule 4 (instruction -> FOR ID = range_expr instruction .)
+    PRINT           reduce using rule 4 (instruction -> FOR ID = range_expr instruction .)
+    RETURN          reduce using rule 4 (instruction -> FOR ID = range_expr instruction .)
+    CONTINUE        reduce using rule 4 (instruction -> FOR ID = range_expr instruction .)
+    BREAK           reduce using rule 4 (instruction -> FOR ID = range_expr instruction .)
+    ID              reduce using rule 4 (instruction -> FOR ID = range_expr instruction .)
+    $end            reduce using rule 4 (instruction -> FOR ID = range_expr instruction .)
+    }               reduce using rule 4 (instruction -> FOR ID = range_expr instruction .)
+    ELSE            reduce using rule 4 (instruction -> FOR ID = range_expr instruction .)
+
+
+state 100
 
     (5) instruction -> WHILE ( condition ) instruction .
     FOR             reduce using rule 5 (instruction -> WHILE ( condition ) instruction .)
@@ -2921,7 +2941,7 @@ state 99
     ELSE            reduce using rule 5 (instruction -> WHILE ( condition ) instruction .)
 
 
-state 100
+state 101
 
     (36) condition -> expr comparator expr .
     (12) expr -> expr . '
@@ -2945,7 +2965,7 @@ state 100
     +               shift and go to state 66
 
 
-state 101
+state 102
 
     (6) instruction -> IF ( condition ) instruction . ELSE instruction
     (7) instruction -> IF ( condition ) instruction .
@@ -2964,7 +2984,7 @@ state 101
     }               reduce using rule 7 (instruction -> IF ( condition ) instruction .)
 
 
-state 102
+state 103
 
     (28) expr -> function_name ( var_args ) .
     :               reduce using rule 28 (expr -> function_name ( var_args ) .)
@@ -2998,19 +3018,10 @@ state 102
     ID              reduce using rule 28 (expr -> function_name ( var_args ) .)
 
 
-state 103
+state 104
 
-    (4) instruction -> FOR ID = expr : expr . instruction
-    (12) expr -> expr . '
-    (20) expr -> expr . DOTDIV expr
-    (21) expr -> expr . DOTMUL expr
-    (22) expr -> expr . DOTSUB expr
-    (23) expr -> expr . DOTADD expr
-    (24) expr -> expr . / expr
-    (25) expr -> expr . * expr
-    (26) expr -> expr . - expr
-    (27) expr -> expr . + expr
-    (4) instruction -> . FOR ID = expr : expr instruction
+    (6) instruction -> IF ( condition ) instruction ELSE . instruction
+    (4) instruction -> . FOR ID = range_expr instruction
     (5) instruction -> . WHILE ( condition ) instruction
     (6) instruction -> . IF ( condition ) instruction ELSE instruction
     (7) instruction -> . IF ( condition ) instruction
@@ -3026,15 +3037,6 @@ state 103
     (47) statement -> . element assign_op expr
     (52) element -> . var [ var_args ]
     (53) var -> . ID
-    '               shift and go to state 58
-    DOTDIV          shift and go to state 59
-    DOTMUL          shift and go to state 60
-    DOTSUB          shift and go to state 61
-    DOTADD          shift and go to state 62
-    /               shift and go to state 63
-    *               shift and go to state 64
-    -               shift and go to state 65
-    +               shift and go to state 66
     FOR             shift and go to state 4
     WHILE           shift and go to state 6
     IF              shift and go to state 7
@@ -3051,60 +3053,7 @@ state 103
     element                        shift and go to state 15
     var                            shift and go to state 16
 
-state 104
-
-    (6) instruction -> IF ( condition ) instruction ELSE . instruction
-    (4) instruction -> . FOR ID = expr : expr instruction
-    (5) instruction -> . WHILE ( condition ) instruction
-    (6) instruction -> . IF ( condition ) instruction ELSE instruction
-    (7) instruction -> . IF ( condition ) instruction
-    (8) instruction -> . { }
-    (9) instruction -> . { instructions }
-    (10) instruction -> . ;
-    (11) instruction -> . statement ;
-    (42) statement -> . PRINT var_args
-    (43) statement -> . RETURN expr
-    (44) statement -> . CONTINUE
-    (45) statement -> . BREAK
-    (46) statement -> . ID assign_op expr
-    (47) statement -> . element assign_op expr
-    (52) element -> . var [ var_args ]
-    (53) var -> . ID
-    FOR             shift and go to state 4
-    WHILE           shift and go to state 6
-    IF              shift and go to state 7
-    {               shift and go to state 8
-    ;               shift and go to state 9
-    PRINT           shift and go to state 11
-    RETURN          shift and go to state 12
-    CONTINUE        shift and go to state 13
-    BREAK           shift and go to state 14
-    ID              shift and go to state 5
-
-    instruction                    shift and go to state 106
-    statement                      shift and go to state 10
-    element                        shift and go to state 15
-    var                            shift and go to state 16
-
 state 105
-
-    (4) instruction -> FOR ID = expr : expr instruction .
-    FOR             reduce using rule 4 (instruction -> FOR ID = expr : expr instruction .)
-    WHILE           reduce using rule 4 (instruction -> FOR ID = expr : expr instruction .)
-    IF              reduce using rule 4 (instruction -> FOR ID = expr : expr instruction .)
-    {               reduce using rule 4 (instruction -> FOR ID = expr : expr instruction .)
-    ;               reduce using rule 4 (instruction -> FOR ID = expr : expr instruction .)
-    PRINT           reduce using rule 4 (instruction -> FOR ID = expr : expr instruction .)
-    RETURN          reduce using rule 4 (instruction -> FOR ID = expr : expr instruction .)
-    CONTINUE        reduce using rule 4 (instruction -> FOR ID = expr : expr instruction .)
-    BREAK           reduce using rule 4 (instruction -> FOR ID = expr : expr instruction .)
-    ID              reduce using rule 4 (instruction -> FOR ID = expr : expr instruction .)
-    $end            reduce using rule 4 (instruction -> FOR ID = expr : expr instruction .)
-    }               reduce using rule 4 (instruction -> FOR ID = expr : expr instruction .)
-    ELSE            reduce using rule 4 (instruction -> FOR ID = expr : expr instruction .)
-
-
-state 106
 
     (6) instruction -> IF ( condition ) instruction ELSE instruction .
     FOR             reduce using rule 6 (instruction -> IF ( condition ) instruction ELSE instruction .)

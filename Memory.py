@@ -1,19 +1,21 @@
 class Memory:
-    def __init__(self, parent, name):
-        self.parent = parent
-        self.name = name
-        self.variables = {}
-
-    def has_key(self, name):
-        return name in self.variables or self.parent.has_key(name)
+    def __init__(self):
+        self.variables = [{}]
 
     def get(self, name):
-        return self.variables[name]
-
+        for table in self.variables:
+            if name in table:
+                return table[name]
+        
     def put(self, name, value):
-        if name in self.variables:
-            self.variables[name] = value
-        elif self.parent.has_key(name):
-            self.parent.put(name, value)
-        else:
-            self.variables[name] = value
+        for table in self.variables:
+            if name in table:
+                table[name] = value
+                return
+        self.variables[-1][name] = value
+        
+    def push_scope(self):
+        self.variables.append({})
+
+    def pop_scope(self):
+        self.variables.pop()

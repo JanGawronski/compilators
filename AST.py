@@ -60,10 +60,9 @@ class WhileLoop(Node):
         self.lineno = lineno
 
 class ForLoop(Node):
-    def __init__(self, variable, start, end, statement, lineno):
+    def __init__(self, variable, range, statement, lineno):
         self.variable = variable
-        self.start = start
-        self.end = end
+        self.range = range
         self.statement = statement
         self.lineno = lineno
 
