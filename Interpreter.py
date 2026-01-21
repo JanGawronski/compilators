@@ -94,19 +94,25 @@ class Interpreter:
     def visit(self, node):
         if self.visit(node.condition):
             self.memory.push_scope()
-            self.visit(node.statement)
-            self.memory.pop_scope()
+            try:
+                self.visit(node.statement)
+            finally:
+                self.memory.pop_scope()
 
     @when(AST.IfElseStatement)
     def visit(self, node):
         if self.visit(node.condition):
             self.memory.push_scope()
-            self.visit(node.true_statement)
-            self.memory.pop_scope()
+            try:
+                self.visit(node.true_statement)
+            finally:
+                self.memory.pop_scope()
         else:
             self.memory.push_scope()
-            self.visit(node.false_statement)
-            self.memory.pop_scope()
+            try:
+                self.visit(node.false_statement)
+            finally:
+                self.memory.pop_scope()
             
     @when(AST.WhileLoop)
     def visit(self, node):
@@ -131,8 +137,8 @@ class Interpreter:
             try:
                 self.visit(node.statement)
             except Exceptions.Continue:
-               self.memory.pop_scope()
-               continue
+                self.memory.pop_scope()
+                continue
             except Exceptions.Break:
                 self.memory.pop_scope()
                 return
@@ -165,8 +171,9 @@ class Interpreter:
             for statement in node.statements:
                 self.visit(statement)
         except Exceptions.Return:
-            pass 
-        self.memory.pop_scope()
+            pass
+        finally:
+            self.memory.pop_scope()
 
     @when(AST.MatrixFunction)
     def visit(self, node):
